@@ -1,4 +1,17 @@
 spring:
   profiles:
     active: dev #默认为开发环境
+  thymeleaf:
+    suffix: .html
+    enabled: true
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  type-aliases-package: com.example.sercurity.entity
+  mapper-locations: classpath:mapper/*.xml
 
+jwt:
+  tokenHeader: Authorization #JWT存储的请求头
+  secret: mySecret #JWT加解密使用的密钥
+  expiration: 604800 #JWT的超期限时间(60*60*24)
+  tokenHead: Bearer  #JWT负载中拿到开头

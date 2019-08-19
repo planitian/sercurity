@@ -2,6 +2,7 @@ package com.example.sercurity.entity;
 
 import java.io.Serializable;
 
+
 public class User implements Serializable {
     /**
      * 
