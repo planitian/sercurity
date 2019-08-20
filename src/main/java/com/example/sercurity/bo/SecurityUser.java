@@ -40,6 +40,7 @@ public class SecurityUser implements UserDetails {
            authorities= roles.stream().map(new Function<Role, GrantedAuthority>() {
                 @Override
                 public GrantedAuthority apply(Role role) {
+//                    return new SimpleGrantedAuthority("ROLE_"+role.getRoleName());
                     return new SimpleGrantedAuthority(role.getRoleName());
                 }
             }).collect(Collectors.toList());

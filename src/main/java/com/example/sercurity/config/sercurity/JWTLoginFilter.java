@@ -1,5 +1,8 @@
 package com.example.sercurity.config.sercurity;
 
+import com.example.sercurity.bo.SecurityUser;
+import com.example.sercurity.utils.JwtTokenUtil;
+import com.example.sercurity.utils.SpringContextUtils;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,11 +22,11 @@ import java.util.Date;
  * @Author: plani
  * 创建时间: 2019/8/19 9:49
  */
-public class MyAuthentication extends UsernamePasswordAuthenticationFilter {
-
+public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
+    private JwtTokenUtil jwtTokenUtil = (JwtTokenUtil) SpringContextUtils.getBean("jwt");
     private AuthenticationManager authenticationManager;
 
-    public MyAuthentication(AuthenticationManager authenticationManager) {
+    public JWTLoginFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
@@ -45,7 +48,7 @@ public class MyAuthentication extends UsernamePasswordAuthenticationFilter {
                 username, password);
         //setDetails(request, authRequest) 是将当前的请求信息设置到 UsernamePasswordAuthenticationToken 中。
         setDetails(request, authRequest);
-        return this.getAuthenticationManager().authenticate(authRequest);
+        return authenticationManager.authenticate(authRequest);
     }
 
     // 用户成功登录后，这个方法会被调用，我们在这个方法里生成token
@@ -54,13 +57,15 @@ public class MyAuthentication extends UsernamePasswordAuthenticationFilter {
                                             HttpServletResponse res,
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
-
-        String token = Jwts.builder()
-                .setSubject(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername())
-                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 24 * 1000))
-                .signWith(SignatureAlgorithm.HS512, "MyJwtSecret")
-                .compact();
-        res.addHeader("Authorization", "Bearer " + token);
+//        String token = Jwts.builder()
+//                .setSubject(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername())
+//                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 24 * 1000))
+//                .signWith(SignatureAlgorithm.HS512, "MyJwtSecret")
+//                .compact();
+        String token = jwtTokenUtil.generateToken(((SecurityUser)auth.getPrincipal()).getUsername());
+        res.addHeader("Authorization", "Bearer" + token);
     }
+
+
 
 }

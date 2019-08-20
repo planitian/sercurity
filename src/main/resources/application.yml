@@ -2,8 +2,11 @@ spring:
   profiles:
     active: dev #默认为开发环境
   thymeleaf:
-    suffix: .html
-    enabled: true
+      suffix: .html
+      enabled: true
+server:
+  port: 8888
+
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
