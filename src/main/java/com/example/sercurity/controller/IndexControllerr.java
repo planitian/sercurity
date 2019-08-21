@@ -53,12 +53,13 @@ public class IndexControllerr {
 
     @RequestMapping("/root")
 //    @Secured({"ROLE_admin", "ROLE_normal"})//前面 角色前面必须要加ROLE
-    @PreAuthorize("hasAuthority('admin')")
+//    @PreAuthorize("hasAuthority('admin')")
 //    @PreAuthorize("principal.username.equals(#username)")
+    @PreAuthorize("ha")
     @ResponseBody
     public String root() {
-        UserDetails userDetails = getUser();
-        logger.info("进来方法:"+userDetails.getUsername());
+//        UserDetails userDetails = getUser();
+//        logger.info("进来方法:"+userDetails.getUsername());
         return "root";
     }
 
@@ -75,6 +76,12 @@ public class IndexControllerr {
             }
         });
         return "root";
+    }
+
+    @RequestMapping("/login")
+    public String login() {
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>");
+        return "login";
     }
 
 }

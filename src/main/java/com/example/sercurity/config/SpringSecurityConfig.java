@@ -1,6 +1,7 @@
 package com.example.sercurity.config;
 
 import com.example.sercurity.bo.SecurityUser;
+import com.example.sercurity.component.MyFilter;
 import com.example.sercurity.component.RestAuthenticationEntryPoint;
 import com.example.sercurity.component.RestfulAccessDeniedHandler;
 import com.example.sercurity.config.sercurity.JWTAuthenticationFilter;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,6 +26,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author: plani
@@ -59,18 +69,20 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
         .authorizeRequests();*/
 //        httpSecurity.authorizeRequests().anyRequest().permitAll();
-        httpSecurity.csrf().disable()
+        httpSecurity.csrf().disable()//跨域攻击去除
                 .sessionManagement()// 基于token，所以不需要session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/login")//login接口不需要授权
-                .permitAll()
-                .anyRequest()
-                .authenticated();
+                .and()//返回SecurityBuilder
+                .authorizeRequests()//配置url
+                .antMatchers("/register")//注册接口，任何人都可以访问
+                .permitAll()////允许所有人访问
+                .anyRequest()//所有请求
+                .authenticated()//授权的用户
+                ;
         httpSecurity.exceptionHandling().accessDeniedHandler(restfulAccessDeniedHandler).authenticationEntryPoint(restAuthenticationEntryPoint);
-        httpSecurity.addFilter(new JWTLoginFilter(authenticationManager()))
-                .addFilter(jwtAuthenticationFilter());
+        httpSecurity
+                .addFilterAt(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(jwtAuthenticationFilter(), BasicAuthenticationFilter.class);
     }
 
     @Override
@@ -119,13 +131,15 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+
     @Bean
-    public JWTAuthenticationFilter jwtAuthenticationFilter() {
-        try {
+    public JWTAuthenticationFilter jwtAuthenticationFilter() throws Exception {
             return new JWTAuthenticationFilter(authenticationManager());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    }
+    @Bean
+    public JWTLoginFilter jwtLoginFilter() throws Exception {
+        JWTLoginFilter jwtLoginFilter = new JWTLoginFilter();
+        jwtLoginFilter.setAuthenticationManager(authenticationManagerBean());
+        return jwtLoginFilter;
     }
 }
