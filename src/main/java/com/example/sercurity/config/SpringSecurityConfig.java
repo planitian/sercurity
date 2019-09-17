@@ -6,18 +6,23 @@ import com.example.sercurity.component.RestAuthenticationEntryPoint;
 import com.example.sercurity.component.RestfulAccessDeniedHandler;
 import com.example.sercurity.config.sercurity.JWTAuthenticationFilter;
 import com.example.sercurity.config.sercurity.JWTLoginFilter;
+import com.example.sercurity.config.sercurity.MyAccessDecisionManager;
 import com.example.sercurity.config.sercurity.MyAuthticationProvider;
 import com.example.sercurity.entity.User;
 import com.example.sercurity.service.PermissonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -26,6 +31,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -41,7 +47,6 @@ import java.util.Map;
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true,securedEnabled = true,jsr250Enabled = true)
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private Logger logger = LoggerFactory.getLogger(SpringSecurityConfig.class);
     @Autowired
@@ -54,6 +59,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private MyAuthticationProvider myAuthticationProvider;
+
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -83,6 +89,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .addFilterAt(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(jwtAuthenticationFilter(), BasicAuthenticationFilter.class);
+
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        super.configure(web);
+
     }
 
     @Override
@@ -94,7 +107,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .and()
 //                .authenticationProvider(myAuthticationProvider);
     }
-
 
     // 装载BCrypt密码编码器
     @Bean
@@ -109,8 +121,15 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             public boolean matches(CharSequence rawPassword, String encodedPassword) {
                 return rawPassword.equals(encodedPassword);
             }
+
         };
     }
+
+    @Bean
+    public AccessDecisionManager accessDecisionManager() {
+        return new MyAccessDecisionManager();
+    }
+
 
 
     @Override
