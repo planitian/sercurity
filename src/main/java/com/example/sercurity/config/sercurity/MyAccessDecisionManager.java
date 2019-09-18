@@ -5,6 +5,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -14,6 +15,7 @@ import sun.plugin.liveconnect.SecurityContextHelper;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.function.Consumer;
 
 /**
  * @Author: plani
@@ -33,9 +35,16 @@ public class MyAccessDecisionManager implements AccessDecisionManager {
     public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes) throws AccessDeniedException, InsufficientAuthenticationException {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String appId = request.getParameter("appid");
+
         if (configAttributes == null || configAttributes.size() <= 0) {
             return;
         }
+       authentication.getAuthorities().forEach(new Consumer<GrantedAuthority>() {
+           @Override
+           public void accept(GrantedAuthority grantedAuthority) {
+               System.out.println(grantedAuthority.getAuthority());
+           }
+       });
         Iterator<ConfigAttribute> iterator = configAttributes.iterator();
         while (iterator.hasNext()) {
             //取出 json字符串

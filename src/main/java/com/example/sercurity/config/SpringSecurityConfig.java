@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -89,6 +90,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .addFilterAt(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(jwtAuthenticationFilter(), BasicAuthenticationFilter.class);
+        httpSecurity.authorizeRequests().withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+            @Override
+            public <O extends FilterSecurityInterceptor> O postProcess(O object) {
+                object.setAccessDecisionManager(new MyAccessDecisionManager());
+                return object;
+            }
+        });
 
     }
 
