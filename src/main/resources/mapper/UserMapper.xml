@@ -13,7 +13,7 @@
     id, password, remarks, user_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_user
     where id = #{id,jdbcType=INTEGER}
@@ -27,9 +27,9 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.example.sercurity.entity.User">
-    insert into t_user (id, password, remarks, 
+    insert into t_user (id, password, remarks,
       user_name)
-    values (#{id,jdbcType=INTEGER}, #{password,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{password,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR},
       #{userName,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.example.sercurity.entity.User">

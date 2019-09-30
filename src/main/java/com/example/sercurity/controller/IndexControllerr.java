@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,8 +35,8 @@ import java.util.function.Consumer;
  * @Author: plani
  * 创建时间: 2019/8/19 10:30
  */
-@RestController
-@RequestMapping("/")
+@Controller
+@RequestMapping("/index/")
 public class IndexControllerr {
 
     private Logger logger = LoggerFactory.getLogger(IndexControllerr.class);
@@ -51,20 +52,20 @@ public class IndexControllerr {
         return null;
     }
 
-    @RequestMapping("/root")
+    @RequestMapping("root")
 //    @Secured({"ROLE_admin", "ROLE_normal"})//前面 角色前面必须要加ROLE
-//    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('root')")
 //    @PreAuthorize("principal.username.equals(#username)")
-    @PreAuthorize("ha")
-    @ResponseBody
-    public String root() {
+    public String root(Model model) {
 //        UserDetails userDetails = getUser();
 //        logger.info("进来方法:"+userDetails.getUsername());
-        return "root";
+        logger.info("我进来了");
+        model.addAttribute("user", SecurityContextHolder.getContext().getAuthentication().getName());
+        return "index";
     }
 
 
-    @RequestMapping("/norole")
+    @RequestMapping("norole")
     public String noRole(Model model) {
         UserDetails userDetails = getUser();
         logger.info(userDetails.getUsername());
@@ -78,10 +79,8 @@ public class IndexControllerr {
         return "root";
     }
 
-    @RequestMapping("/login")
-    public String login() {
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>");
-        return "login";
+    @RequestMapping("success")
+    public String success() {
+        return "success";
     }
-
 }
