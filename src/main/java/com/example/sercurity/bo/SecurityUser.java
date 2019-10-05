@@ -3,17 +3,13 @@ package com.example.sercurity.bo;
 import com.example.sercurity.entity.Role;
 import com.example.sercurity.entity.User;
 import com.example.sercurity.service.PermissonService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -40,7 +36,9 @@ public class SecurityUser implements UserDetails {
            authorities= roles.stream().map(new Function<Role, GrantedAuthority>() {
                 @Override
                 public GrantedAuthority apply(Role role) {
+                    //用注解时候  hasRole  判断 角色前面 加 "ROLE_"
 //                    return new SimpleGrantedAuthority("ROLE_"+role.getRoleName());
+                    //hasAuthority  的时候  就不需要加任何前缀
                     return new SimpleGrantedAuthority(role.getRoleName());
                 }
             }).collect(Collectors.toList());

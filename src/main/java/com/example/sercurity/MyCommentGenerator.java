@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.Properties;
 
 /**
+ * 给生成的entiy字段 添加注释
  * @Author: plani
  * 创建时间: 2019/8/16 15:41
  */

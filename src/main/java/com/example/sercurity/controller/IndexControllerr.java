@@ -36,51 +36,39 @@ import java.util.function.Consumer;
  * 创建时间: 2019/8/19 10:30
  */
 @Controller
-@RequestMapping("/index/")
+@RequestMapping("index/")
 public class IndexControllerr {
 
     private Logger logger = LoggerFactory.getLogger(IndexControllerr.class);
 
-    public UserDetails getUser() { //为了session从获取用户信息,可以配置如下
-        ;
-        SecurityContext ctx = SecurityContextHolder.getContext();
-        Authentication auth = ctx.getAuthentication();
-        if (auth.getPrincipal() instanceof UserDetails) {
-            logger.info("类型 " + ((UserDetails) auth.getPrincipal()).getUsername());
-            return ((UserDetails) auth.getPrincipal());
-        }
-        return null;
-    }
 
     @RequestMapping("root")
-//    @Secured({"ROLE_admin", "ROLE_normal"})//前面 角色前面必须要加ROLE
-    @PreAuthorize("hasAuthority('root')")
-//    @PreAuthorize("principal.username.equals(#username)")
+    //要用  root 权限 才可以访问这个接口
+    @PreAuthorize("hasAuthority('admin')")
     public String root(Model model) {
-//        UserDetails userDetails = getUser();
-//        logger.info("进来方法:"+userDetails.getUsername());
         logger.info("我进来了");
+        //可以通过 SecurityContextHolder.getContext().getAuthentication() 来得到当前的认证对象
+        //Authentication 有很多信息，你可以自己实现一个类，任何在filter中调用SecurityContextHolder.getContext().setAuthentication(); 存储你的认证对象
+        //这里得到的有可能是 你自定义的，也有可能是 匿名的认证对象。
         model.addAttribute("user", SecurityContextHolder.getContext().getAuthentication().getName());
+
         return "index";
     }
 
-
+    //不需要 任何权限都可以访问，但这个不代表 任何人都可以访问这个接口，这个需要看你的设置。
     @RequestMapping("norole")
     public String noRole(Model model) {
-        UserDetails userDetails = getUser();
-        logger.info(userDetails.getUsername());
-        model.addAttribute("username", userDetails.getUsername());
-        userDetails.getAuthorities().stream().forEach(new Consumer<GrantedAuthority>() {
-            @Override
-            public void accept(GrantedAuthority grantedAuthority) {
-                logger.info("role " + grantedAuthority.getAuthority());
-            }
-        });
-        return "root";
+        return "norole";
     }
 
     @RequestMapping("success")
     public String success() {
         return "success";
+    }
+   //在配置文件里面 放开这个接口 ，也没有配置鉴权相关的注解，所以 访问这个接口没有任何限制
+    @RequestMapping("asdf")
+    public String asd() {
+        System.out.println("ssssssssssssssssssssssss");
+        return "asdf";
     }
 }
