@@ -138,7 +138,7 @@
 
     <!--生产环境:输出到文件-->
     <springProfile name="dev">
-        <root level="debug">
+        <root level="info">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="DEBUG_FILE"/>
         </root>

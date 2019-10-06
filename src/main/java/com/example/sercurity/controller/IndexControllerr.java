@@ -44,7 +44,7 @@ public class IndexControllerr {
 
     @RequestMapping("root")
     //要用  root 权限 才可以访问这个接口
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('admin') or hasAnyRole('ROLE_root')")
     public String root(Model model) {
         logger.info("我进来了");
         //可以通过 SecurityContextHolder.getContext().getAuthentication() 来得到当前的认证对象
@@ -65,8 +65,10 @@ public class IndexControllerr {
     public String success() {
         return "success";
     }
-   //在配置文件里面 放开这个接口 ，也没有配置鉴权相关的注解，所以 访问这个接口没有任何限制
+
+    //在配置文件里面 放开这个接口 ，也没有配置鉴权相关的注解，所以 访问这个接口没有任何限制
     @RequestMapping("asdf")
+//    @PreAuthorize("hasAuthority('admin')")
     public String asd() {
         System.out.println("ssssssssssssssssssssssss");
         return "asdf";

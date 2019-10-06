@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
 /**
  * 配置form 登录的
@@ -32,8 +33,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity
 //启用 方法鉴权  全局 只能有一个类 有这个注解。
-//@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
-//@Order(3)//通过这个数字 来决定两个config那个生效
+/*@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+@Order(3)//通过这个数字 来决定两个config那个生效*/
 public class FormSecurityConfig extends WebSecurityConfigurerAdapter {
     private Logger logger = LoggerFactory.getLogger(FormSecurityConfig.class);
     @Autowired
@@ -94,7 +95,6 @@ public class FormSecurityConfig extends WebSecurityConfigurerAdapter {
 
         //使用自己定义的  authenticationProvider
 //        httpSecurity.authenticationProvider(myAuthticationProvider);
-
 
     }
 
