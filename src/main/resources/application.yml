@@ -2,10 +2,12 @@ spring:
   profiles:
     active: dev #默认为开发环境
   thymeleaf:
-      suffix: .html
       enabled: true
+      suffix: .html
 server:
   port: 8888
+  error:
+    path: /error
 
 mybatis:
   configuration:
@@ -16,5 +18,5 @@ mybatis:
 jwt:
   tokenHeader: Authorization #JWT存储的请求头
   secret: mySecret #JWT加解密使用的密钥
-  expiration: 60 #JWT的超期限时间(60*60*24)
+  expiration: 3600 #JWT的超期限时间(60*60*24)
   tokenHead: Bearer  #JWT负载中拿到开头

@@ -7,18 +7,21 @@
 </head>
 <body>
 <h1>Login page</h1>
-<div th:if="${param.error}">
-    Invalid username and password.
+<div style="width:100%;text-align:center">
+    <div th:if="${param.error}">
+        Invalid username and password.
+    </div>
+    <div th:if="${param.logout}">
+        You have been logged out.
+    </div>
+    <form th:action="@{/myaction}" method="post" style="padding: auto">
+        <label for="username">Username</label>:
+        <input type="text" id="userName" name="userName" autofocus="autofocus" style="margin-top: 10%"/> <br/>
+        <label for="password">Password</label>:
+        <input type="password" id="password" name="password"/> <br/>
+        <input type="submit" value="Login"/>
+    </form>
 </div>
-<div th:if="${param.logout}">
-    You have been logged out.
-</div>
-<form th:action="@{/login}" method="post">
-    <label for="username">Username</label>:
-    <input type="text" id="userName" name="userName" autofocus="autofocus" /> <br />
-    <label for="password">Password</label>:
-    <input type="password" id="password" name="password" /> <br />
-    <input type="submit" value="Login" />
-</form>
+
 </body>
 </html>

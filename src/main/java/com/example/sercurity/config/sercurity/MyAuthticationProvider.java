@@ -1,7 +1,5 @@
 package com.example.sercurity.config.sercurity;
 
-import com.example.sercurity.SercurityApplication;
-import com.example.sercurity.config.SpringSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
