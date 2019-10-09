@@ -67,7 +67,19 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
+        //requestMatchers 允许指定将在哪个HttpServletRequest实例上调用此HttpSecurity
+        //和多httpSecurity 一样的效果
+        //就是 当访问 /re/** 这些接口的时候  是使用下面 一部分代码的，链式调用 结束 为 分隔符
+        httpSecurity.requestMatchers().antMatchers("/re/**")
+                .and()
+                .requestMatchers()
+                .antMatchers("/re/s")//只要链式 没有结束， 那么这一整个配置 就是一体的
+                .and()
+                //所有人 都可以访问
+                .authorizeRequests().anyRequest().permitAll();
 
+
+        //其他的url  使用下面的这部分配置
         httpSecurity.csrf().disable()//跨域攻击去除
                 .sessionManagement()// 基于token，所以不需要session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
