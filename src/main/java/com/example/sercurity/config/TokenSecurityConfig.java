@@ -45,7 +45,7 @@ import java.io.IOException;
 //启用 方法鉴权
 //下面这个注解 ，项目只能有一个类可以使用，要注意
 //@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
-@Order(3)
+//@Order(3)
 public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
     private Logger logger = LoggerFactory.getLogger(FormSecurityConfig.class);
     @Autowired
@@ -73,10 +73,11 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.requestMatchers().antMatchers("/re/**")
                 .and()
                 .requestMatchers()
-                .antMatchers("/re/s")//只要链式 没有结束， 那么这一整个配置 就是一体的
+                .antMatchers("/game/s")//只要链式 没有结束， 那么这一整个配置 就是一体的
                 .and()
-                //所有人 都可以访问
-                .authorizeRequests().anyRequest().permitAll();
+                .authorizeRequests()//对上面配置的  "/re/**" 和 "/game/s" 进行认证配置
+                .antMatchers("/**")//"/re/**" 和 "/game/s" 下的所有链接都可以访问 ，这里不能用anyRequest()  这个方法一个HttpSecurity 实例 只能调用一次，
+                .permitAll();
 
 
         //其他的url  使用下面的这部分配置
