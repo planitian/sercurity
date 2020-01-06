@@ -41,7 +41,7 @@ import java.io.IOException;
  * 创建时间: 2019/8/16 17:50
  */
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity
 //启用 方法鉴权
 //下面这个注解 ，项目只能有一个类可以使用，要注意
 //@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
@@ -158,7 +158,7 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 使用BCrypt进行密码的hash
                 .passwordEncoder(passwordEncoder);
 //                .and()
-        //使用 自己的 authenticationProvider  进行具体的认证过称
+        //使用 自己的 authenticationProvider  进行具体的认证过称,在自定义登录方式时候很有用
 //                .authenticationProvider(myAuthticationProvider);
     }
 

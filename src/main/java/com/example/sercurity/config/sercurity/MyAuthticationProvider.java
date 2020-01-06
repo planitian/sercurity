@@ -40,7 +40,9 @@ public class MyAuthticationProvider implements AuthenticationProvider {
     }
 
     @Override
+    //判断传入的authentication类型 是不是 这个类 支持的，这里 和JWT的使用的类型相同
     public boolean supports(Class<?> authentication) {
+
         return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
 }

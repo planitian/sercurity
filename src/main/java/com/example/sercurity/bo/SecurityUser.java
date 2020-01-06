@@ -20,20 +20,20 @@ import java.util.stream.Collectors;
 public class SecurityUser implements UserDetails {
     private User user;
 
-    private PermissonService permissonService;
+    private List<Role> roles;
 
 
-    public SecurityUser(User user, PermissonService permissonService) {
+    public SecurityUser(User user, List<Role> roles) {
         this.user = user;
-        this.permissonService = permissonService;
+        this.roles = roles;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<Role> roles = permissonService.rolesByUser(user);
+
         List<GrantedAuthority> authorities = null;
-        if (roles!=null&&!roles.isEmpty()){
-           authorities= roles.stream().map(new Function<Role, GrantedAuthority>() {
+        if (roles != null && !roles.isEmpty()) {
+            authorities = roles.stream().map(new Function<Role, GrantedAuthority>() {
                 @Override
                 public GrantedAuthority apply(Role role) {
                     //用注解时候  hasRole  判断 角色前面 加 "ROLE_"
