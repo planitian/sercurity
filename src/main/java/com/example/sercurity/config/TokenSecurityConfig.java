@@ -107,9 +107,9 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
 
         httpSecurity
                 //Filter Chain 里面的UsernamePasswordAuthenticationFilter类的位置  添加  我们自定义的Filter
-                //在指定Filter类的位置添加筛选器,要注意 位置，这个不要求是Sercurity的 Filter 实例
+                //在指定Filter类的位置添加筛选器,要注意 位置，这个不要求是Sercurity的 Filter的子类 实例
                 .addFilterAt(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class)
-
+               //spring sercurity会自动的拿你的自定义类，来替换掉自己的默认类，例如，UsernamePasswordAuthenticationFilter 就不会出现在filter chain里面了
 
                 //在 UsernamePasswordAuthenticationFilter 的位置前面加入 Filter
 //                .addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class)
@@ -172,6 +172,8 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
     public JWTLoginFilter jwtLoginFilter() throws Exception {
         JWTLoginFilter jwtLoginFilter = new JWTLoginFilter();
         jwtLoginFilter.setAuthenticationManager(authenticationManagerBean());
+          //设置登录 接口
+        jwtLoginFilter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
         return jwtLoginFilter;
     }
 
