@@ -27,6 +27,7 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -108,7 +109,13 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 //Filter Chain 里面的UsernamePasswordAuthenticationFilter类的位置  添加  我们自定义的Filter
                 //在指定Filter类的位置添加筛选器,要注意 位置，这个不要求是Sercurity的 Filter的子类 实例
+                //重大发现 《《《《《如果 将filter 交给spring 管理，那么 spring security的chain有这个，外部filet集合 还是会有一个这样的实例》》》》》
+                //所以 最后不要用这样的方式，如果用filter 也应该用new的方式。内部的 就用静态注入
                 .addFilterAt(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class)
+
+                //或者用 下面的successHandler 来处理认证成功的逻辑，用AuthenticationManager 处理 认证逻辑
+//                .formLogin().failureHandler().successHandler()
+
                //spring sercurity会自动的拿你的自定义类，来替换掉自己的默认类，例如，UsernamePasswordAuthenticationFilter 就不会出现在filter chain里面了
 
                 //在 UsernamePasswordAuthenticationFilter 的位置前面加入 Filter
@@ -135,7 +142,7 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * 在这里 配置  WebSecurity的一些东西
+     * 在这里 配置 Spring Security Filter Chain 的一些东西，例如 securityInterceptor
      *
      * @param web
      * @throws Exception
@@ -172,7 +179,7 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
     public JWTLoginFilter jwtLoginFilter() throws Exception {
         JWTLoginFilter jwtLoginFilter = new JWTLoginFilter();
         jwtLoginFilter.setAuthenticationManager(authenticationManagerBean());
-          //设置登录 接口
+          //设置登录 接口 url
         jwtLoginFilter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
         return jwtLoginFilter;
     }
